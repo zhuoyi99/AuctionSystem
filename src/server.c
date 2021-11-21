@@ -1,5 +1,7 @@
 //this is Rei's first attempt at using git :)
 
+//here is another comment :)
+
 #include "server.h"
 
 
