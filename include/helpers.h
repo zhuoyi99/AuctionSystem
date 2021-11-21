@@ -1,14 +1,21 @@
 //define struct for auctions
-
-typedef struct{
+#include <stdio.h>
+struct Auction{
     char* name;
     unsigned duration;
     unsigned buyItNow;
     unsigned auctionID;
     char* username;
-} Auction;
+};
 
-typedef struct{
+typedef struct Auction Auction;
+
+struct AuctionList{
     Auction* auction;
-    Node* next;
-} Node;
+    struct AuctionList* next;
+};
+
+typedef struct AuctionList AuctionList;
+
+
+void parseAuctions(FILE* file);

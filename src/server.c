@@ -2,7 +2,7 @@
 //please work-
 
 #include "server.h"
-
+#include "helpers.h"
 
 #include <pthread.h>
 #include <signal.h>
@@ -151,29 +151,37 @@ void run_server(int server_port){
 
 int main(int argc, char* argv[])
 {
+
     int opt;
 
     unsigned int port = 0;
-    while ((opt = getopt(argc, argv, "p:")) != -1) {
-        switch (opt) {
-        case 'p':
-            port = atoi(optarg);
-            break;
-        default: /* '?' */
-            fprintf(stderr, "Server Application Usage: %s -p <port_number>\n",
-                    argv[0]);
-            exit(EXIT_FAILURE);
-        }
-    }
+    // while ((opt = getopt(argc, argv, "p:")) != -1) {
+    //     switch (opt) {
+    //     case 'p':
+    //         port = atoi(optarg);
+    //         break;
+    //     default: /* '?' */
+    //         fprintf(stderr, "Server Application Usage: %s -p <port_number>\n",
+    //                 argv[0]);
+    //         exit(EXIT_FAILURE);
+    //     }
+    // }
 
-    if (port == 0){
-        fprintf(stderr, "ERROR: Port number for server to listen is not given\n");
-        fprintf(stderr, "Server Application Usage: %s -p <port_number>\n",
-                    argv[0]);
-        exit(EXIT_FAILURE);
-    }
+    // if (port == 0){
+    //     fprintf(stderr, "ERROR: Port number for server to listen is not given\n");
+    //     fprintf(stderr, "Server Application Usage: %s -p <port_number>\n",
+    //                 argv[0]);
+    //     exit(EXIT_FAILURE);
+    // }
+ 
+  
+    port = atoi(argv[1]);
 
-    run_server(port);
+    FILE* input = fopen(argv[2],"r"); // printf("i can see 179");
+  
+    parseAuctions(input);
+  
+    // run_server(port);
 
     return 0;
 }
