@@ -1,4 +1,4 @@
-
+//this is Rei's first attempt at using git :)
 
 #include "server.h"
 
