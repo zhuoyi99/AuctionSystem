@@ -181,7 +181,13 @@ int main(int argc, char* argv[])
   
     parseAuctions(input);
   
-    // run_server(port);
+    run_server(port);
 
+    //char* s = malloc(12); ;
+    // char* s1 = "hi";
+    // char b[12];
+    //char buff[12] = "hello";
+    //strcpy(s,buff);
+    //printf("%s",s);
     return 0;
 }

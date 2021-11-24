@@ -17,5 +17,6 @@ struct AuctionList{
 
 typedef struct AuctionList AuctionList;
 
-
 void parseAuctions(FILE* file);
+void addAuction(AuctionList* item);
+void displayAuctions(AuctionList* head);
