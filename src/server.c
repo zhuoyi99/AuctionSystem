@@ -3,14 +3,14 @@
 
 #include "server.h"
 #include "helpers.h"
-
+#include "protocol.h"
 #include <pthread.h>
 #include <signal.h>
+#include <assert.h>
 
 const char exit_str[] = "exit";
 
-char buffer[BUFFER_SIZE];
-pthread_mutex_t buffer_lock; 
+pthread_mutex_t buffer_lock;
 
 int total_num_msg = 0;
 int listen_fd;
@@ -67,7 +67,65 @@ int server_init(int server_port){
     return sockfd;
 }
 
-//Function running in thread
+
+/*
+log in -> store user information
+insert the job into a shared buffer
+*/
+
+void* process_client(void* clientfd_ptr){
+    char* username;
+    petr_header* msg_header = malloc(sizeof(petr_header));
+    int client_fd = *(int *)clientfd_ptr;
+    free(clientfd_ptr);
+
+    if(rd_msgheader(client_fd,msg_header) == -1){
+        printf("something's off with reading a message");
+        
+    }
+    char buffer[BUFFER_SIZE];
+    switch (msg_header->msg_type)
+    {
+    
+    case LOGOUT:
+        close(client_fd);
+
+    default:
+        //put the job into buffer
+        break;
+    }
+    
+    return NULL;
+
+}
+
+//check if user name exist
+//if user exists, check the password
+//if not, create a new user, insert into user list
+//return 0 if sucess, -1 for error
+int  process_login(int client_fd){
+    
+    petr_header msg_header;
+    assert(rd_msgheader(client_fd, &msg_header) == 0);
+    assert(msg_header.msg_type == LOGIN);
+
+    //read msg body
+    char buffer[BUFFER_SIZE];
+    int read_count = read(client_fd, buffer, msg_header.msg_len);
+    assert(read_count == msg_header.msg_len);
+
+    //split to name&pwd
+    char* username = strtok(buffer, "\r\n");
+    char* pwd = strtok(NULL, "\r\n");
+    assert(username != NULL && pwd != NULL);
+
+
+    return 0;
+}
+
+
+
+/*
 void *process_client(void* clientfd_ptr){
     int client_fd = *(int *)clientfd_ptr;
     free(clientfd_ptr);
@@ -120,11 +178,10 @@ void *process_client(void* clientfd_ptr){
     printf("Close current client connection\n");
     close(client_fd);
     return NULL;
-}
+}*/
 
 void run_server(int server_port){
     listen_fd = server_init(server_port); // Initiate server and start listening on specified port
-    int client_fd;
     struct sockaddr_in client_addr;
     unsigned int client_addr_len = sizeof(client_addr);
 
@@ -139,12 +196,17 @@ void run_server(int server_port){
             printf("server acccept failed\n");
             exit(EXIT_FAILURE);
         }
-        else{
-            printf("Client connetion accepted\n");
-            pthread_create(&tid, NULL, process_client, (void *)client_fd); 
+
+        if(process_login(*client_fd) < 0){
+
         }
+        exit(-1);
+
+
+        printf("Client connetion accepted\n");
+        pthread_create(&tid, NULL, process_client, (void *)client_fd); 
     }
-    bzero(buffer, BUFFER_SIZE);
+    //bzero(buffer, BUFFER_SIZE);
     close(listen_fd);
     return;
 }
@@ -177,17 +239,11 @@ int main(int argc, char* argv[])
   
     port = atoi(argv[1]);
 
-    FILE* input = fopen(argv[2],"r"); // printf("i can see 179");
+    FILE* input = fopen(argv[2],"r"); 
   
     parseAuctions(input);
   
     run_server(port);
 
-    //char* s = malloc(12); ;
-    // char* s1 = "hi";
-    // char b[12];
-    //char buff[12] = "hello";
-    //strcpy(s,buff);
-    //printf("%s",s);
     return 0;
 }

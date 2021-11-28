@@ -4,8 +4,8 @@
 
 #define BUFFER_SIZE 1000
 
-AuctionList* p = NULL;
-AuctionList* head = NULL;
+
+AuctionList* auctionHead = NULL;
 
 /*
 This function prefills the server with auction items.
@@ -53,24 +53,26 @@ void parseAuctions(FILE* file){
             
             temp->auction = auction;
             addAuction(temp);
-            //displayAuctions(head);
+           
             
         }
         
     }
+    //displayAuctions(head);
    
 }
 
 void addAuction(AuctionList* item){
-    if(head == NULL){
-        head = item;
+    if(auctionHead == NULL){
+        auctionHead = item;
     }
     else{
-        p = head;
-        while(p->next != NULL){
-            p = p->next;
+        AuctionList* iter = auctionHead;
+        
+        while(iter->next != NULL){
+            iter = iter->next;
         }
-        p->next = item;
+        iter->next = item;
 
     }
 
