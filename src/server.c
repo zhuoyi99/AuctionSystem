@@ -1,5 +1,3 @@
-//this is Rei's first attempt at using git :)
-//please work-
 
 #include "server.h"
 #include "helpers.h"
